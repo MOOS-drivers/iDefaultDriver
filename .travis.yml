@@ -6,13 +6,15 @@ language: cpp
 compiler:
  - gcc
 
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq -y --force-yes g++ subversion xterm cmake libfltk1.3-dev freeglut3-dev libpng12-dev libjpeg-dev libxft-dev libxinerama-dev libtiff4-dev tree
+
 before_script:
  - export curr_path=$PWD
  - cd ..
  - svn co https://oceanai.mit.edu/svn/moos-ivp-aro/releases/moos-ivp-15.5 moos-ivp
  - cd moos-ivp
- - sudo apt-get update -q
- - sudo apt-get install -y --force-yes g++ subversion xterm cmake libfltk1.3-dev freeglut3-dev libpng12-dev libjpeg-dev libxft-dev libxinerama-dev libtiff4-dev tree
  - ./build-moos.sh -j $((`nproc` / 2))
  - ./build-ivp.sh -m -f -j $((`nproc` / 2))
  - export PATH=$PATH:$PWD/bin
@@ -22,4 +24,6 @@ before_script:
 script:
  - ./GenMOOSDriver.sh Driver "MOOS Dev."
  - ./build.sh -j $((`nproc` / 2))
- - tree
+
+after_script:
+ - tree -I build

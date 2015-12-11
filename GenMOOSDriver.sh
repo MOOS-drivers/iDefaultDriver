@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -e src/"$1".h ]; then
-    echo "Driver for $1 seem to already exist... quitting to avoid damaging previous work."
+if [ -d src ]; then
+    echo "src folder to already exist... quitting to avoid damaging previous work."
     exit 1
 fi
 
@@ -155,6 +155,121 @@ message("+++++++++++++++++++++++++++++++++++++++++")
 ADD_SUBDIRECTORY( src )
 
 EOF
+
+mkdir -p scripts
+cd scripts
+
+cat > clean_test_i${1}.sh <<EOF
+#!/bin/bash -e
+
+VERBOSE=""
+HELP="no"
+
+## Check command-line arguments
+for ARGI; do
+    UNDEFINED_ARG=\$ARGI
+    if [ "\${ARGI}" = "--verbose" -o "\${ARGI}" = "-v" ] ; then
+        VERBOSE="-v"
+        UNDEFINED_ARG=""
+    fi
+    if [ "\${ARGI}" = "--help" -o "\${ARGI}" = "-h" ] ; then
+        HELP="yes"
+        UNDEFINED_ARG=""
+    fi
+    if [ "\${UNDEFINED_ARG}" != "" ] ; then
+        BAD_ARGS=\$UNDEFINED_ARG
+    fi
+done
+
+if [ "\${BAD_ARGS}" != "" ] ; then
+    printf "Bad Argument: %s \n" \$BAD_ARGS
+    exit 0
+fi
+
+if [ "\${HELP}" = "yes" ]; then
+    printf "%s [SWITCHES]                       \n" \$0
+    printf "Switches:                           \n" 
+    printf "  --verbose                         \n" 
+    printf "  --help, -h                        \n" 
+    exit 0;
+fi
+
+## Clean the directory
+rm -rf  \$VERBOSE   LOG_*
+rm -f   \$VERBOSE   *~
+rm -f   \$VERBOSE   targ_*
+rm -f   \$VERBOSE   .LastOpenedMOOSLogDirectory
+
+EOF
+chmod a+x clean_test_i${1}.sh
+
+cat > launch_test_i${1}.sh <<EOF
+#!/bin/bash -e
+
+JUST_MAKE="no"
+
+## Check command-line arguments
+for ARGI; do
+    if [ "\${ARGI}" = "--help" -o "\${ARGI}" = "-h" ] ; then
+        printf "%s [SWITCHES] [time_warp]   \n" \$0
+        printf "  --just_make, -j    \n" 
+        printf "  --help, -h         \n" 
+        exit 0;
+    elif [ "\${ARGI}" = "--just_build" -o "\${ARGI}" = "-j" ] ; then
+        JUST_MAKE="yes"
+    else 
+        printf "Bad Argument: %s \n" \$ARGI
+        exit 0
+    fi
+done
+
+## Build test file
+nsplug meta_test.moos targ_test.moos -f
+
+if [ \${JUST_MAKE} = "yes" ] ; then
+    exit 0
+fi
+
+## Launch the test
+export PATH=\$PATH:\$PWD/../bin
+pAntler targ_test.moos >& /dev/null &
+
+uXMS targ_test.moos
+
+printf "Killing all processes ... \n"
+kill %1 
+printf "Done killing processes.   \n"
+
+EOF
+chmod a+x launch_test_i${1}.sh
+
+cat > meta_test.moos <<EOF
+ServerHost = localhost
+ServerPort = 9000
+Community = i${1}_Test
+
+MOOSTimeWarp = 1
+
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 500
+  Run = MOOSDB           @ NewConsole = true 
+  Run = i${1}             @ NewConsole = false
+}
+
+ProcessConfig = uXMS
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  source = i${1}
+}
+
+#include ../src/i${1}.moos
+
+EOF
+
+cd ..
 
 mkdir -p src
 cd src

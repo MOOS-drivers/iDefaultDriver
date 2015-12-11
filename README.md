@@ -1,4 +1,4 @@
-# iDefaultDriver
+# iDefaultDriver [![Build Status](https://travis-ci.org/MOOS-drivers/iDefaultDriver.svg)](https://travis-ci.org/MOOS-drivers/iDefaultDriver)
 This repository helps you create an AppCasting MOOS Driver for your next driver project.
 
 ## Usage

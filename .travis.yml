@@ -1,30 +1,24 @@
-#sudo: required
-#dist: trusty
-
 language: cpp
 
 compiler:
  - gcc
+
 
 addons:
   apt:
     packages:
     - cmake
     - subversion
-	- g++
-	- xterm
-	- libfltk1.3-dev
-	- freeglut3-dev
-	- libpng12-dev
-	- libjpeg-dev
-	- libxft-dev
-	- libxinerama-dev
-	- libtiff4-dev
-	- tree
-
-#before_install:
-# - sudo apt-get update -qq
-# - sudo apt-get install -qq -y --force-yes g++ subversion xterm cmake libfltk1.3-dev freeglut3-dev libpng12-dev libjpeg-dev libxft-dev libxinerama-dev libtiff4-dev tree
+    - g++
+    - xterm
+    - libfltk1.3-dev
+    - freeglut3-dev
+    - libpng12-dev
+    - libjpeg-dev
+    - libxft-dev
+    - libxinerama-dev
+    - libtiff4-dev
+    - tree
 
 before_script:
  - export curr_path=$PWD

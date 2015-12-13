@@ -29,15 +29,15 @@ before_script:
  - cd ..
  - svn co https://oceanai.mit.edu/svn/moos-ivp-aro/releases/moos-ivp-15.5 moos-ivp
  - cd moos-ivp
- - ./build-moos.sh -j $((`nproc` / 2))
- - ./build-ivp.sh -m -f -j $((`nproc` / 2))
+ - ./build-moos.sh -j 2
+ - ./build-ivp.sh -m -f -j 2
  - export PATH=$PATH:$PWD/bin
  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/lib
  - cd "$curr_path"
 
 script:
  - ./GenMOOSDriver.sh Driver "MOOS Dev."
- - ./build.sh -j $((`nproc` / 2))
+ - ./build.sh -j 2
 
 after_script:
  - tree -I build

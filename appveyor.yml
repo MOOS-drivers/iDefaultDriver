@@ -1,4 +1,64 @@
 version: 0.1.{build}
-clone_depth: 3
-build:
-  verbosity: minimal
+
+platform:
+- x64
+- x86
+
+environment:
+  MOOS_CORE: c:/projects/moos-ivp
+  PROJ4: c:/projects/proj4
+  
+  matrix:
+# VS 2010
+  - BUILD_TYPE: cmake
+    VS_VERSION: Visual Studio 10
+
+# VS 2012
+  - BUILD_TYPE: cmake
+    VS_VERSION: Visual Studio 11
+
+# VS 2013
+  - BUILD_TYPE: cmake
+    VS_VERSION: Visual Studio 12
+
+# VS 2015
+  - BUILD_TYPE: cmake
+    VS_VERSION: Visual Studio 13
+    
+shallow_clone: true
+
+init:
+  - cmd: >-
+   if if "%platform%" == "x64" SET VS_FULL=%VS_VERSION% Win64
+   if if "%platform%" == "x86" SET VS_FULL=%VS_VERSION%
+   cd ..
+   git clone https://github.com/msis/core-moos
+   cd core-moos
+   mkdir build
+   cd build
+   cmake ../ -G "%VS_FULL%"
+   cmake --build . --config Release
+   cd %APPVEYOR_BUILD_FOLDER%
+   cd ..
+   git clone https://github.com/osgeo/proj.4 proj4
+   cd proj4
+   mkdir build
+   cd build
+   cmake ../ -G "%VS_FULL%"
+   cmake --build . --config Release
+   cd %APPVEYOR_BUILD_FOLDER%
+   
+   
+
+build_script:
+  - bash.exe GenMOOSDriver.sh LOL "Dev."
+  - if if "%platform%" == "x64" SET VS_FULL=%VS_VERSION% Win64
+  - if if "%platform%" == "x86" SET VS_FULL=%VS_VERSION%
+  - if echo "%VS_FULL%"
+  - if cmake -G "%VS_FULL%" . -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=../bin -DBUILD_LIBPROJ_SHARED=ON
+  - if cmake --build . --config Release
+
+test_script:
+  - echo test_script
+
+deploy: off

@@ -9,9 +9,6 @@ environment:
   PROJ4: c:/projects/proj4
   
   matrix:
-# VS 2010
-  - BUILD_TYPE: cmake
-    VS_VERSION: Visual Studio 10
 
 # VS 2012
   - BUILD_TYPE: cmake

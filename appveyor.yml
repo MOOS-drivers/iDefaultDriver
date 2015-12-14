@@ -1,0 +1,4 @@
+version: 0.1.{build}
+clone_depth: 3
+build:
+  verbosity: minimal

@@ -28,25 +28,24 @@ environment:
 shallow_clone: true
 
 init:
- - cmd: >-
-  if if "%platform%" == "x64" SET VS_FULL=%VS_VERSION% Win64
-  if if "%platform%" == "x86" SET VS_FULL=%VS_VERSION%
-  cd ..
-  git clone https://github.com/msis/core-moos
-  cd core-moos
-  mkdir build
-  cd build
-  cmake ../ -G "%VS_FULL%"
-  cmake --build . --config Release
-  cd %APPVEYOR_BUILD_FOLDER%
-  cd ..
-  git clone https://github.com/osgeo/proj.4 proj4
-  cd proj4
-  mkdir build
-  cd build
-  cmake ../ -G "%VS_FULL%"
-  cmake --build . --config Release
-  cd %APPVEYOR_BUILD_FOLDER%
+  - if if "%platform%" == "x64" SET VS_FULL=%VS_VERSION% Win64
+  - if if "%platform%" == "x86" SET VS_FULL=%VS_VERSION%
+  - cd ..
+  - git clone https://github.com/msis/core-moos
+  - cd core-moos
+  - mkdir build
+  - cd build
+  - cmake ../ -G "%VS_FULL%"
+  - cmake --build . --config Release
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - cd ..
+  - git clone https://github.com/osgeo/proj.4 proj4
+  - cd proj4
+  - mkdir build
+  - cd build
+  - cmake ../ -G "%VS_FULL%"
+  - cmake --build . --config Release
+  - cd %APPVEYOR_BUILD_FOLDER%
 
 build_script:
   - bash.exe GenMOOSDriver.sh LOL "Dev."

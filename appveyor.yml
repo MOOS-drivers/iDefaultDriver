@@ -40,7 +40,7 @@ init:
   - cd proj4
   - mkdir build
   - cd build
-  - cmake ../ -G "%VS_FULL%"
+  - cmake ../ -G "%VS_FULL%" -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=../bin -DBUILD_LIBPROJ_SHARED=ON
   - cmake --build . --config Release
   - cd %APPVEYOR_BUILD_FOLDER%
 

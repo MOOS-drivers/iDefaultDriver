@@ -9,7 +9,7 @@ compiler:
 
 cache:
   directories:
-  - $HOME/moos-ivp
+  - $TRAVIS_BUILD_DIR/../moos-ivp/
 
 addons:
   apt:

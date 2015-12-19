@@ -7,6 +7,9 @@ os:
 compiler:
  - gcc
 
+cache:
+  directories:
+  - $HOME/moos-ivp
 
 addons:
   apt:

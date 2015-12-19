@@ -7,6 +7,9 @@ os:
 compiler:
  - gcc
 
+cache:
+  directories:
+  - $TRAVIS_BUILD_DIR/../moos-ivp/
 
 addons:
   apt:
